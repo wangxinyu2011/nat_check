@@ -17,3 +17,4 @@ Package Command:
 							  # Return "test_text"
 
 
+License GPL.
