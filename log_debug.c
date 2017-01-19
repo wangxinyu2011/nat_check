@@ -9,7 +9,7 @@
 #include <fcntl.h>
 
 #include "log_debug.h"
-
+// Add a comment
 static int log_counter = 0;
 static int log_level = LOG_LEVEL_TRACE;
 //static int log_level = LOG_LEVEL_DEBUG;

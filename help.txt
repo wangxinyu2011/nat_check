@@ -1,0 +1,19 @@
+USE UDP protocol to Check nat type automatic.
+By Wangxinyu 2016.9.14
+
+Client    ---------Router------------    Server
+
+
+Command:
+nc_cli localIp  serIp[:serPort]
+
+nc_ser lisenIp
+
+
+Package Command:
+"get ip_port"   # Server send client's ip and port  back. 
+				# Return "ip:port"
+"send from ip:port test_text" # Server will construct package src ip:port test_text to client. 
+							  # Return "test_text"
+
+
